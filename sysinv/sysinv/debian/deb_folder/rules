@@ -1,9 +1,12 @@
 #!/usr/bin/make -f
 #export DH_VERBOSE = 1
 
+export DEB_HOST_ARCH ?= $(shell dpkg-architecture -qDEB_HOST_ARCH 2>/dev/null)
+
 export PYBUILD_NAME=sysinv
 export PBR_VERSION=1.0.0
 DEBIAN_DIR := $(CURDIR)/debian/tmp
+SYSINV_DIR := $(CURDIR)/sysinv
 
 %:
 	dh $@ --with python3 --buildsystem=pybuild
@@ -15,6 +18,12 @@ override_dh_auto_test:
 endif
 
 override_dh_install:
+ifeq ($(DEB_HOST_ARCH),arm64)
+	sed -i "s/ttyS0/ttyAMA0/" $(SYSINV_DIR)/db/sqlalchemy/models.py \
+		$(SYSINV_DIR)/conductor/manager.py \
+		$(SYSINV_DIR)/tests/db/utils.py \
+		$(SYSINV_DIR)/tests/conductor/test_manager.py
+endif
 	python3 setup.py install -f --install-layout=deb \
 		--root=$(CURDIR)/debian/tmp
 	python3 setup.py bdist_wheel \
