@@ -1,15 +1,22 @@
 #!/usr/bin/make -f
 #export DH_VERBOSE = 1
 
+DEB_HOST_ARCH ?= $(shell dpkg-architecture -qDEB_HOST_ARCH 2>/dev/null)
+
 export PYBUILD_NAME=cgts-client
 # (chuck) - workaround for pbr version detection when running install
 export PBR_VERSION=1.0.0
 ROOT := $(CURDIR)/debian/tmp
+CGTS_DIR := $(CURDIR)/cgtsclient
 
 %:
 	dh $@ --with python3 --buildsystem=pybuild
 
 override_dh_install:
+ifeq ($(DEB_HOST_ARCH),arm64)
+	sed -i "s/ttyS0/ttyAMA0/" $(CGTS_DIR)/v1/iHost_shell.py \
+		$(CGTS_DIR)/tests/v1/test_ihost.py
+endif
 	python3 setup.py install -f --install-layout=deb \
 		--root=$(CURDIR)/debian/tmp
 	python3 setup.py bdist_wheel \
