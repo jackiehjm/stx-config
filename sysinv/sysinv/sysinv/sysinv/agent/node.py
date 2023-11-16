@@ -20,6 +20,8 @@ import re
 from oslo_log import log as logging
 import tsconfig.tsconfig as tsc
 
+from sysinv.common import utils
+
 LOG = logging.getLogger(__name__)
 
 # Defines the size of one kilobyte
@@ -223,6 +225,7 @@ class NodeOperator(object):
 
         # In the case topology not detected, hard-code structures
         if self.num_nodes == 0:
+            cpu_model = self._get_cpu_model_lscpu()
             n_sockets, n_cores, n_threads = (1, int(self.num_cpus), 1)
             self.topology = {}
             for socket_id in range(n_sockets):
@@ -245,6 +248,9 @@ class NodeOperator(object):
                             'thread': thread_id,
                             'capabilities': {},
                         }
+                        if cpu_model:
+                            attrs.update({'cpu_model': cpu_model})
+
                         icpus.append(attrs)
 
             # Define Thread-Socket-Core order for logical cpu enumeration
@@ -267,6 +273,8 @@ class NodeOperator(object):
                             'thread': thread_id,
                             'capabilities': {},
                         }
+                        if cpu_model:
+                            attrs.update({'cpu_model': cpu_model})
                         icpus.append(attrs)
                         cpu += 1
             self.num_nodes = len(list(self.topology.keys()))
@@ -274,6 +282,24 @@ class NodeOperator(object):
         LOG.debug("inumas= %s, icpus = %s" % (inumas, icpus))
 
         return inumas, icpus
+
+    def _get_cpu_model_lscpu(self):
+        """Get cpu model from lscpu
+
+        Returns:
+            string: the cpu model name
+        """
+        cpu_model = ""
+        output = utils.execute(
+            "lscpu | grep 'Model name' | cut -f 2- -d:|awk '{$1=$1}1'",
+            shell=True)
+
+        if isinstance(output, tuple):
+            cpu_model = output[0]
+            if cpu_model:
+                cpu_model = cpu_model.strip()
+                LOG.info("CPU Model name: {}".format(cpu_model))
+        return cpu_model
 
     def _get_immediate_subdirs(self, dir):
         return [name for name in listdir(dir)
