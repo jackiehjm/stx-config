@@ -121,6 +121,7 @@ from sysinv.common.retrying import retry
 from sysinv.common.storage_backend_conf import StorageBackendConfig
 from cephclient import wrapper as ceph
 from sysinv.conductor import ceph as iceph
+from sysinv.conductor import ipsec_pod_policy
 from sysinv.conductor import kube_app
 from sysinv.conductor import openstack
 from sysinv.conductor import docker_registry
@@ -438,6 +439,8 @@ class ConductorManager(service.PeriodicService):
                         self.dbapi,
                         constants.SB_TYPE_CEPH):
             greenthread.spawn(self._init_ceph_cluster_info)
+
+        self.ipsec_pod_policy_op = ipsec_pod_policy.IpsecPodPolicyOperator()
 
     def _start(self):
         self.dbapi = dbapi.get_instance()
@@ -1657,6 +1660,14 @@ class ConductorManager(service.PeriodicService):
 
         self._config_apply_runtime_manifest(context, config_uuid,
                                             config_dict, force=True)
+
+    def apply_ipsec_pod_policy_config(self, context):
+        """apply IPsec pod policy to each nodes"""
+        return self.ipsec_pod_policy_op.apply_ipsec_pod_policy_config(context)
+
+    def ipsec_pod_policy_applying_status(self, context):
+        """get the apply status of ipsec pod policy"""
+        return self.ipsec_pod_policy_op.ipsec_pod_policy_applying_status(context)
 
     def report_apparmor_config_complete(self, context, ihost_uuid, status, error):
         """ Report apparmor config runtime manifest from agent completed run
@@ -3032,6 +3043,10 @@ class ConductorManager(service.PeriodicService):
         else:
             personalities = (ihost_obj.personality,)
             is_cpe = False
+
+        # apply IPsec pod policy before unconfigure a host
+        LOG.info("call apply pod policy for unconfigure a host")
+        self.ipsec_pod_policy_op.apply_ipsec_pod_policy_config(context)
 
         for personality in personalities:
             if personality == constants.CONTROLLER:
@@ -6588,6 +6603,12 @@ class ConductorManager(service.PeriodicService):
                     ihost.reboot_needed = False
                     ihost.save(context)
                 self._clear_device_image_alarm(context)
+
+                # Call wait for the new host
+                # into avaliable/online then do the apply.
+                self.ipsec_pod_policy_op.wait_host_ready_apply_pod_policy(
+                    context,
+                    ihost)
 
     def iconfig_update_by_ihost(self, context,
                                 ihost_uuid, imsg_dict):
