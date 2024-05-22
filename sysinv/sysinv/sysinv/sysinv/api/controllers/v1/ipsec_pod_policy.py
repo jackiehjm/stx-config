@@ -11,6 +11,7 @@ from pecan import rest
 from wsme import types as wtypes
 
 from oslo_log import log
+from oslo_utils import uuidutils
 from sysinv._i18n import _
 
 import wsmeext.pecan as wsme_pecan
@@ -264,36 +265,67 @@ class IpsecPodPolicyController(rest.RestController):
     @wsme_pecan.wsexpose(IpsecPodPolicy, body=IpsecPodPolicy)
     def post(self, ipsec_pod_policy):
         """Create a new IPsec pod policy."""
+        if pecan.request.rpcapi.ipsec_pod_policy_applying_status(
+                pecan.request.context):
+            raise Exception("An IPsec pod policy is applying")
         policy = self._create_ipsec_pod_policy(ipsec_pod_policy)
         system = pecan.request.dbapi.isystem_get_one()
         if not system.capabilities.get('pod_to_pod_security_enabled', False):
             return
         LOG.info("Call the conductor to create the policy")
-        # TODO(twang4): Call the conductor to update connection and policy
+        ret = pecan.request.rpcapi.apply_ipsec_pod_policy(
+            pecan.request.context)
+        if ret:
+            LOG.error(f"apply_ipsec_pod_policy return with:{ret}")
+            raise Exception("error in IPsec pod policy applying")
         return policy
 
     @cutils.synchronized(LOCK_NAME)
     @wsme_pecan.wsexpose(None, types.uuid, status_code=204)
     def delete(self, ipsec_pod_policy_uuid):
         """Delete an IPsec pod policy."""
+        if pecan.request.rpcapi.ipsec_pod_policy_applying_status(
+                pecan.request.context):
+            raise Exception("An IPsec pod policy is applying")
         policy_obj = objects.ipsec_pod_policy.get_by_uuid(
             pecan.request.context, ipsec_pod_policy_uuid)
         if policy_obj:
+            pecan.request.dbapi.ipsec_pod_policy_destroy(
+                ipsec_pod_policy_uuid)
             system = pecan.request.dbapi.isystem_get_one()
             if not system.capabilities.get('pod_to_pod_security_enabled',
                                            False):
                 return
             LOG.info("Call the conductor to remove the policy")
-            # TODO(twang4): Call the conductor to update connection and policy
-            pecan.request.dbapi.ipsec_pod_policy_destroy(
-                ipsec_pod_policy_uuid)
+            ret = pecan.request.rpcapi.apply_ipsec_pod_policy(
+                pecan.request.context)
+            if ret:
+                LOG.error(f"apply_ipsec_pod_policy return with:{ret}")
+                raise Exception("error in IPsec pod policy applying")
 
     @cutils.synchronized(LOCK_NAME)
-    @wsme.validate(types.uuid, [IpsecPodPolicyPatchType])
-    @wsme_pecan.wsexpose(IpsecPodPolicy, types.uuid,
+    # @wsme.validate(types.uuid, [IpsecPodPolicyPatchType])
+    @wsme_pecan.wsexpose(IpsecPodPolicy, wtypes.text,
                          body=[IpsecPodPolicyPatchType])
-    def patch(self, ipsec_pod_policy_uuid, patch):
-        """Updates attributes of an IPsec pod policy."""
+    def patch(self, uuid_or_operation, patch):
+        """Updates attributes of an IPsec pod policy or
+           apply IPsec pod policies
+        """
+        if pecan.request.rpcapi.ipsec_pod_policy_applying_status(
+                pecan.request.context):
+            raise Exception("An IPsec pod policy is applying")
+
+        if not uuidutils.is_uuid_like(uuid_or_operation):
+            # handle IPsec pod policy apply operation
+            if uuid_or_operation == 'apply':
+                ret = pecan.request.rpcapi.apply_ipsec_pod_policy(
+                    pecan.request.context)
+                return ret
+            else:
+                err_str = "Invalid UUID: %s" % uuid_or_operation
+                raise ValueError(_(err_str))
+
+        ipsec_pod_policy_uuid = uuid_or_operation
         ipsec_pod_policy = self._get_one(ipsec_pod_policy_uuid)
         updates = self._get_updates(patch)
         LOG.debug("Updates attributes of policy "
@@ -321,5 +353,10 @@ class IpsecPodPolicyController(rest.RestController):
         LOG.info("Call the conductor to update the policy")
         policy = pecan.request.dbapi.ipsec_pod_policy_update(
             ipsec_pod_policy_uuid, updates)
-        # TODO(twang4): Call the conductor to update connection and policy
+        ret = pecan.request.rpcapi.apply_ipsec_pod_policy(
+            pecan.request.context)
+        policy = self._get_one(ipsec_pod_policy_uuid)
+        if ret:
+            LOG.error(f"apply_ipsec_pod_policy return with:{ret}")
+            raise Exception("error in IPsec pod policy applying")
         return policy

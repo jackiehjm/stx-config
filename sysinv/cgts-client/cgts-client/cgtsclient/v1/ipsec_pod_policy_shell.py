@@ -34,6 +34,13 @@ def do_ipsec_pod_policy_list(cc, args):
     utils.print_list(ipsec_pod_policy_list, fields, fields, sortby=1)
 
 
+def do_ipsec_pod_policy_apply(cc, args):
+    """Apply IPsec Pod policies"""
+    ret = cc.ipsec_pod_policy.apply()
+    if ret:
+        print(ret)
+
+
 @utils.arg('ipsec_pod_policy_uuid',
            metavar='<ipsec pod policy uuid>',
            help="UUID of ipsec pod policy entry")

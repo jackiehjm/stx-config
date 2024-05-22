@@ -27,6 +27,10 @@ class IpsecPodPolicyManager(base.Manager):
         ret = self._list(path, "ipsec_pod_policy")
         return ret
 
+    def apply(self):
+        path = '/v1/ipsec_pod_policy/apply'
+        return self._update(path, None)
+
     def get(self, ipsec_pod_policy_uuid):
         """Show an IPsec pod policy."""
         path = '/v1/ipsec_pod_policy/%s' % ipsec_pod_policy_uuid
