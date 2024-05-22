@@ -64,7 +64,8 @@ class Host(base.SysinvObject):
             # NOTE: driver should be read-only after server is created
             'invprovision': utils.str_or_none,
             'mgmt_mac': utils.str_or_none,
-            'mgmt_ip': utils.str_or_none,
+            # TODO(twang4): remove this to workaround node add issue
+            # 'mgmt_ip': utils.str_or_none,
 
             # Software version
             'sw_version': utils.str_or_none,
