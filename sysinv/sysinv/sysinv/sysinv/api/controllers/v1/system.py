@@ -436,6 +436,7 @@ class SystemController(rest.RestController):
         change_dc_role = False
         vswitch_type = None
         new_system_mode = None
+        ipsec_pod_policy_enable_changed = False
 
         for p in jsonpatch.JsonPatch(patch):
             try:
@@ -506,6 +507,10 @@ class SystemController(rest.RestController):
                 sdn_enabled = p['value'].lower()
                 patch.remove(p)
 
+            if p['path'] == '/pod_to_pod_security_enabled':
+                pod_to_pod_security_enabled = p['value'].lower()
+                patch.remove(p)
+
             if p['path'] == '/https_enabled':
                 https_enabled = p['value'].lower()
                 patch.remove(p)
@@ -546,6 +551,16 @@ class SystemController(rest.RestController):
                 else:
                     self._verify_sdn_disabled()
                     patched_system['capabilities']['sdn_enabled'] = False
+
+        if 'pod_to_pod_security_enabled' in updates:
+            if (pod_to_pod_security_enabled !=
+                rpc_isystem['capabilities'].get('pod_to_pod_security_enabled',
+                                                False)):
+                if pod_to_pod_security_enabled == 'true':
+                    patched_system['capabilities']['pod_to_pod_security_enabled'] = True
+                else:
+                    patched_system['capabilities']['pod_to_pod_security_enabled'] = False
+                ipsec_pod_policy_enable_changed = True
 
         if 'https_enabled' in updates:
             # Pre-check: if user is setting https_enabled to false
@@ -698,6 +713,15 @@ class SystemController(rest.RestController):
             LOG.info("update security_feature %s" % security_feature)
             pecan.request.rpcapi.update_security_feature_config(
                 pecan.request.context)
+
+        if ipsec_pod_policy_enable_changed:
+            ret = pecan.request.rpcapi.apply_ipsec_pod_policy(
+                pecan.request.context)
+            if ret:
+                msg = f"apply_ipsec_pod_policy return with:{ret}"
+                LOG.error(msg)
+                raise exception.PatchError(
+                    patch='pod_to_pod_security_enabled', reason=msg)
 
         return System.convert_with_links(rpc_isystem)
 

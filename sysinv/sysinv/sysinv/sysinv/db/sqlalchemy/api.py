@@ -5256,6 +5256,58 @@ class Connection(api.Connection):
             raise exception.NetworkAddrpoolNotFound(network_addrpool_uuid=network_addrpool_uuid)
         query.delete()
 
+    @db_objects.objectify(objects.ipsec_pod_policy)
+    def ipsec_pod_policy_get_all(self, limit=None, marker=None,
+                                    sort_key=None, sort_dir=None):
+        query = model_query(models.IpsecPodPolicy)
+        return _paginate_query(models.IpsecPodPolicy, limit, marker,
+                               sort_key, sort_dir, query)
+
+    @db_objects.objectify(objects.ipsec_pod_policy)
+    def ipsec_pod_policy_create(self, values):
+        if not values.get('uuid'):
+            values['uuid'] = uuidutils.generate_uuid()
+        ipsec_pod_policy = models.IpsecPodPolicy(**values)
+        with _session_for_write() as session:
+            try:
+                session.add(ipsec_pod_policy)
+                session.flush()
+            except db_exc.DBDuplicateEntry:
+                raise exception.IpsecPodPolicyAlreadyExists(
+                    uuid=values['uuid'])
+            return self._ipsec_pod_policy_get(values['uuid'])
+
+    @db_objects.objectify(objects.ipsec_pod_policy)
+    def ipsec_pod_policy_update(self, ipsec_pod_policy_uuid, values):
+        with _session_for_write() as session:
+            ipsec_pod_policy = self._ipsec_pod_policy_get(ipsec_pod_policy_uuid)
+            ipsec_pod_policy.update(values)
+            session.add(ipsec_pod_policy)
+            session.flush()
+            return ipsec_pod_policy
+
+    def _ipsec_pod_policy_get(self, ipsec_pod_policy_uuid):
+        query = model_query(models.IpsecPodPolicy)
+        query = add_identity_filter(query, ipsec_pod_policy_uuid)
+        try:
+            result = query.one()
+        except NoResultFound:
+            raise exception.IpsecPodPolicyNotFound(ipsec_pod_policy_uuid=ipsec_pod_policy_uuid)
+        return result
+
+    @db_objects.objectify(objects.ipsec_pod_policy)
+    def ipsec_pod_policy_get(self, ipsec_pod_policy_uuid):
+        return self._ipsec_pod_policy_get(ipsec_pod_policy_uuid)
+
+    def ipsec_pod_policy_destroy(self, ipsec_pod_policy_uuid):
+        query = model_query(models.IpsecPodPolicy)
+        query = add_identity_filter(query, ipsec_pod_policy_uuid)
+        try:
+            query.one()
+        except NoResultFound:
+            raise exception.IpsecPodPolicyNotFound(ipsec_pod_policy_uuid=ipsec_pod_policy_uuid)
+        query.delete()
+
     def _interface_network_get(self, uuid):
         query = model_query(models.InterfaceNetworks)
         query = add_identity_filter(query, uuid)

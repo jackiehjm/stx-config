@@ -47,6 +47,7 @@ from cgtsclient.v1 import inode
 from cgtsclient.v1 import interface_datanetwork
 from cgtsclient.v1 import interface_network
 from cgtsclient.v1 import intp
+from cgtsclient.v1 import ipsec_pod_policy
 from cgtsclient.v1 import ipv
 from cgtsclient.v1 import isensor
 from cgtsclient.v1 import isensorgroup
@@ -186,3 +187,4 @@ class Client(object):
         self.kube_rootca_update = kube_rootca_update.KubeRootCAUpdateManager(self.http_client)
         self.kube_config_kubelet = \
             kube_config_kubelet.KubeConfigKubeletManager(self.http_client)
+        self.ipsec_pod_policy = ipsec_pod_policy.IpsecPodPolicyManager(self.http_client)

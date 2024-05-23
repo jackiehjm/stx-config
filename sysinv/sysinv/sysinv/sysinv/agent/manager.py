@@ -55,6 +55,7 @@ from oslo_log import log
 from oslo_service import periodic_task
 from oslo_utils import timeutils
 from sysinv.agent import disk
+from sysinv.agent import ipsec_pod_policy
 from sysinv.agent import partition
 from sysinv.agent import pv
 from sysinv.agent import lvg
@@ -204,6 +205,8 @@ class AgentManager(service.PeriodicService):
         self._ipartition_operator = partition.PartitionOperator()
         self._ilvg_operator = lvg.LVGOperator()
         self._lldp_operator = lldp_plugin.SysinvLldpPlugin()
+        self._pod_policy_operator = \
+            ipsec_pod_policy.IpsecPodPolicyAgentOperator()
         self._iconfig_read_config_reported = None
         self._ihost_min_cpu_mhz_allowed = 0
         self._ihost_max_cpu_mhz_allowed = 0
@@ -2362,3 +2365,11 @@ class AgentManager(service.PeriodicService):
             self._prev_fs = None
             self._inventoried_initial = False
             self._inventory_reported = set()
+
+    def apply_ipsec_pod_policy_manifest(self, context,
+                                        host_uuid, data):
+        # Apply the manifest of ipsec pod policy
+        LOG.info("ipsec pod policy _ihost_uuid %s, requested host uuid %s" %
+                 (self._ihost_uuid, host_uuid))
+        if self._ihost_uuid and self._ihost_uuid == host_uuid:
+            return self._pod_policy_operator.puppet_apply_manifest(data)

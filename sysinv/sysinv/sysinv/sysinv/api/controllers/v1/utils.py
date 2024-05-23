@@ -333,6 +333,11 @@ def get_sdn_enabled():
     return system.capabilities.get('sdn_enabled', False)
 
 
+def get_pod_to_pod_security_enabled():
+    system = pecan.request.dbapi.isystem_get_one()
+    return system.capabilities.get('pod_to_pod_security_enabled', False)
+
+
 def get_region_config():
     system = pecan.request.dbapi.isystem_get_one()
     # TODO(mpeters): this should to be updated to return a boolean value

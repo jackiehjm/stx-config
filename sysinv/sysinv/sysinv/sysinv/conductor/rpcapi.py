@@ -1241,6 +1241,24 @@ class ConductorAPI(sysinv.openstack.common.rpc.proxy.RpcProxy):
                          self.make_msg('update_apparmor_config',
                                        ihost_uuid=ihost_uuid))
 
+    def apply_ipsec_pod_policy(self, context):
+        """Synchronously, have a conductor apply the IPsec pod policy to each
+        controller and worker node.
+        Does the following tasks:
+        - Update puppet hiera configuration file and apply run time manifest
+         via an synchronous rpc call to sysinv-agent
+        :param context: request context.
+        """
+        return self.call(context,
+                         self.make_msg('apply_ipsec_pod_policy_config'))
+
+    def ipsec_pod_policy_applying_status(self, context):
+        """Synchronously, get the ipsec_pod_policy applying status.
+        :param context: request context.
+        """
+        return self.call(context,
+                         self.make_msg('ipsec_pod_policy_applying_status'))
+
     def start_import_load(self, context, path_to_iso, path_to_sig,
                           import_type=None, timeout=180):
         """Synchronously, mount the ISO and validate the load for import

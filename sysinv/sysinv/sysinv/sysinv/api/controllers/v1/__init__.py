@@ -96,6 +96,7 @@ from sysinv.api.controllers.v1 import system
 from sysinv.api.controllers.v1 import upgrade
 from sysinv.api.controllers.v1 import user
 from sysinv.api.controllers.v1 import host_fs
+from sysinv.api.controllers.v1 import ipsec_pod_policy
 
 
 class MediaType(base.APIBase):
@@ -300,6 +301,9 @@ class V1(base.APIBase):
 
     restore = [link.Link]
     "Links to the restore resource"
+
+    ipsec_pod_policy = [link.Link]
+    "Links to ipsec pod-to-pod policy resource"
 
     @classmethod
     def convert(self):
@@ -922,6 +926,13 @@ class V1(base.APIBase):
                                           'restore', '',
                                           bookmark=True)
                       ]
+
+        v1.ipsec_pod_policy = [link.Link.make_link('self', pecan.request.host_url,
+                                                   'ipsec_pod_policy', ''),
+                               link.Link.make_link('bookmark',
+                                          pecan.request.host_url,
+                                          'ipsec_pod_policy', '',
+                                          bookmark=True)]
         return v1
 
 
@@ -1004,6 +1015,7 @@ class Controller(rest.RestController):
     device_labels = device_label.DeviceLabelController()
     restore = restore.RestoreController()
     network_addresspools = network_addrpool.NetworkAddresspoolController()
+    ipsec_pod_policy = ipsec_pod_policy.IpsecPodPolicyController()
 
     @wsme_pecan.wsexpose(V1)
     def get(self):
