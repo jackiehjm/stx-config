@@ -506,6 +506,10 @@ class SystemController(rest.RestController):
                 sdn_enabled = p['value'].lower()
                 patch.remove(p)
 
+            if p['path'] == '/pod_to_pod_security_enabled':
+                pod_to_pod_security_enabled = p['value'].lower()
+                patch.remove(p)
+
             if p['path'] == '/https_enabled':
                 https_enabled = p['value'].lower()
                 patch.remove(p)
@@ -546,6 +550,15 @@ class SystemController(rest.RestController):
                 else:
                     self._verify_sdn_disabled()
                     patched_system['capabilities']['sdn_enabled'] = False
+
+        if 'pod_to_pod_security_enabled' in updates:
+            if pod_to_pod_security_enabled != rpc_isystem['capabilities']['pod_to_pod_security_enabled']:
+                if pod_to_pod_security_enabled == 'true':
+                    patched_system['capabilities']['pod_to_pod_security_enabled'] = True
+                    # TODO(twang4): call conductor apply pod_to_pod_security
+                else:
+                    patched_system['capabilities']['pod_to_pod_security_enabled'] = False
+                    # TODO(twang4): call conductor apply pod_to_pod_security
 
         if 'https_enabled' in updates:
             # Pre-check: if user is setting https_enabled to false

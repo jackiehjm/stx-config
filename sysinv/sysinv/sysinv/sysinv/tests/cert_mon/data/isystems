@@ -21,6 +21,7 @@
             "updated_at": "2020-11-27T15:02:01.531935+00:00",
             "capabilities": {
                 "sdn_enabled": false,
+                "pod_to_pod_security_enabled": false,
                 "vswitch_type": "none",
                 "bm_region": "External",
                 "shared_services": "[]",

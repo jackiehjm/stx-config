@@ -27,6 +27,7 @@ management_interface = None
 oam_interface = None
 cluster_host_interface = None
 sdn_enabled = "no"
+pod_to_pod_security_enabled = "no"
 host_uuid = None
 install_uuid = None
 system_type = None
@@ -133,6 +134,10 @@ def _load():
         global sdn_enabled
         if config.has_option('platform_conf', 'sdn_enabled'):
             sdn_enabled = str(config.get('platform_conf', 'sdn_enabled'))
+
+        global pod_to_pod_security_enabled
+        if config.has_option('platform_conf', 'pod_to_pod_security_enabled'):
+            pod_to_pod_security_enabled = str(config.get('platform_conf', 'pod_to_pod_security_enabled'))
 
         global host_uuid
         if config.has_option('platform_conf', 'UUID'):
