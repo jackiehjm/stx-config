@@ -107,6 +107,7 @@ from sysinv.objects import restore
 from sysinv.objects import kube_rootca_update
 from sysinv.objects import kube_rootca_host_update
 from sysinv.objects import runtime_config
+from sysinv.objects import ipsec_pod_policy
 
 
 # alias objects for RPC compatibility
@@ -205,6 +206,7 @@ kube_rootca_host_update = kube_rootca_host_update.KubeRootCAHostUpdate
 kube_rootca_update = kube_rootca_update.KubeRootCAUpdate
 runtime_config = runtime_config.RuntimeConfig
 network_addrpool = network_addrpool.NetworkAddrpool
+ipsec_pod_policy = ipsec_pod_policy.IpsecPodPolicy
 
 __all__ = ("system",
            "cluster",
@@ -293,6 +295,7 @@ __all__ = ("system",
            "kube_rootca_update",
            "runtime_config",
            "network_addrpool",
+           "ipsec_pod_policy",
            # alias objects for RPC compatibility
            "ihost",
            "ilvg")

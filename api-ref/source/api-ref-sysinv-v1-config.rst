@@ -745,6 +745,7 @@ itemNotFound (404)
          "timezone": "UTC",
          "capabilities": {
            "sdn_enabled": false,
+           "pod_to_pod_security_enabled": false,
            "shared_services": "[]",
            "bm_region": "External",
            "cinder_backend": "lvm",
@@ -781,6 +782,8 @@ The attributes of the System object that are modifiable are:
 
 -  sdn_enabled,
 
+-  pod_to_pod_security_enabled,
+
 -  contact.
 
 **Normal response codes**
@@ -806,7 +809,7 @@ badMediaType (415)
    "location (Optional)", "plain", "xsd:string", "The user-specified location of the cloud system."
    "latitude (Optional)", "plain", "xsd:string", "The user-specified latitude GPS coordinate of the cloud system."
    "longitude (Optional)", "plain", "xsd:string", "The user-specified longitude GPS coordinate of the cloud system."
-   "capabilities (Optional)", "plain", "xsd:dictionary", "System capabilities. <ul><li>sdn_enabled : (Boolean) Software Defined Networking enabled. </li><li>region_config : (Boolean) region selection: <ul><li>true : Secondary region. </li><li>false : Primary region. </li></ul></li><li>shared_services : Services provided by Primary region. </li><li>bm_region : Board Management controller network selection: <ul><li>External : OAM network. </li><li>Internal : Management network. </li></ul></li><li>cinder_backend : backend selection for Cinder. </li><li>vswitch_type : vSwitch selection. </li><li>security_feature : Selection of Spectre and Meltdown mitigation options. </li><li>https_enabled : (Boolean) selection of https mode for public URLs. </li></ul>"
+   "capabilities (Optional)", "plain", "xsd:dictionary", "System capabilities. <ul><li>sdn_enabled : (Boolean) Software Defined Networking enabled. </li><li>pod_to_pod_security_enabled : (Boolean) Pod to Pod security enabled. </li><li>region_config : (Boolean) region selection: <ul><li>true : Secondary region. </li><li>false : Primary region. </li></ul></li><li>shared_services : Services provided by Primary region. </li><li>bm_region : Board Management controller network selection: <ul><li>External : OAM network. </li><li>Internal : Management network. </li></ul></li><li>cinder_backend : backend selection for Cinder. </li><li>vswitch_type : vSwitch selection. </li><li>security_feature : Selection of Spectre and Meltdown mitigation options. </li><li>https_enabled : (Boolean) selection of https mode for public URLs. </li></ul>"
    "contact (Optional)", "plain", "xsd:string", "The user-specified contact for the cloud system."
    "software_version (Optional)", "plain", "xsd:string", "Contains the Cloud Server Software Version and the Software Version of the underlying Linux Kernel."
    "uuid (Optional)", "plain", "csapi:UUID", "The universally unique identifier for this object."
@@ -862,6 +865,11 @@ badMediaType (415)
        "value": "true",
        "op": "replace"
      }
+     {
+       "path": "/pod_to_pod_security_enabled",
+       "value": "true",
+       "op": "replace"
+     }
    ]
 
 ::
@@ -888,6 +896,7 @@ badMediaType (415)
          "longitude": "-75.91866628453701",
          "capabilities": {
            "sdn_enabled": true,
+           "pod_to_pod_security_enabled": true,
            "shared_services": "[]",
            "bm_region": "External",
            "cinder_backend": "lvm",

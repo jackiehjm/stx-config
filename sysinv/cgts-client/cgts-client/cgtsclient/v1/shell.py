@@ -34,6 +34,7 @@ from cgtsclient.v1 import imemory_shell
 from cgtsclient.v1 import interface_datanetwork_shell
 from cgtsclient.v1 import interface_network_shell
 from cgtsclient.v1 import intp_shell
+from cgtsclient.v1 import ipsec_pod_policy_shell
 from cgtsclient.v1 import ipv_shell
 from cgtsclient.v1 import isensor_shell
 from cgtsclient.v1 import isensorgroup_shell
@@ -141,6 +142,7 @@ COMMAND_MODULES = [
     device_image_state_shell,
     device_label_shell,
     restore_shell,
+    ipsec_pod_policy_shell,
 ]
 
 

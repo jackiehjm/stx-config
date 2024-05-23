@@ -207,6 +207,7 @@ def get_test_isystem(**kw):
                                         constants.VSWITCH_TYPE_OVS_DPDK,
                                     "region_config": False,
                                     "sdn_enabled": True,
+                                    "pod_to_pod_security_enabled": True,
                                     "shared_services": "[]"}),
             'contact': kw.get('contact', 'isystemcontact'),
             'system_type': kw.get('system_type', constants.TIS_STD_BUILD),

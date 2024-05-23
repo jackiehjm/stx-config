@@ -44,6 +44,11 @@ def _print_isystem_show(isystem):
         setattr(isystem, 'vswitch_type',
                 isystem.capabilities.get('vswitch_type'))
 
+    if isystem.capabilities.get('pod_to_pod_security_enabled') is not None:
+        fields.append('pod_to_pod_security_enabled')
+        setattr(isystem, 'pod_to_pod_security_enabled',
+                isystem.capabilities.get('pod_to_pod_security_enabled'))
+
     data = dict(list([(f, getattr(isystem, f, '')) for f in fields]))
     utils.print_dict(data)
 
@@ -61,6 +66,10 @@ def do_show(cc, args):
            metavar='<sdn_enabled>',
            choices=['true', 'false', 'True', 'False'],
            help='The SDN enabled or disabled flag')
+@utils.arg('-podse', '--pod-to-pod-security-enabled',
+           metavar='<pod_to_pod_security_enabled>',
+           choices=['true', 'false', 'True', 'False'],
+           help='The pod_to_pod_security enabled or disabled flag')
 @utils.arg('-t', '--timezone',
            metavar='<timezone>',
            help='The timezone of the system')
@@ -134,7 +143,8 @@ def do_modify(cc, args):
 
     field_list = ['name', 'system_mode', 'description', 'location', 'latitude',
                   'longitude', 'contact', 'timezone', 'sdn_enabled',
-                  'vswitch_type', 'security_feature']
+                  'vswitch_type', 'security_feature',
+                  'pod_to_pod_security_enabled']
 
     # use field list as filter
     user_fields = dict((k, v) for (k, v) in vars(args).items()

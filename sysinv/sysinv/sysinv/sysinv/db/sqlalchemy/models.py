@@ -2238,3 +2238,13 @@ class KubeAppBundle(Base):
     reserved = Column(JSONEncodedDict, nullable=True)
     UniqueConstraint('name', 'version', name='u_bundle_name_version')
     UniqueConstraint('file_path', name='u_bundle_file_path')
+
+
+class IpsecPodPolicy(Base):
+    __tablename__ = 'ipsec_pod_policy'
+    id = Column(Integer, primary_key=True)
+    uuid = Column(String(36), unique=True)
+    protocol = Column(String(10))
+    port = Column(String(20))
+    policy_status = Column(String(20))
+    UniqueConstraint('protocol', 'port', name='u_bundle_port_protocol')

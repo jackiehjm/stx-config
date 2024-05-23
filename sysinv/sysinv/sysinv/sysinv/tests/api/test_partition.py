@@ -80,6 +80,7 @@ class TestPartition(base.FunctionalTest):
                           "vswitch_type": constants.VSWITCH_TYPE_NONE,
                           "region_config": False,
                           "sdn_enabled": False,
+                          "pod_to_pod_security_enabled": False,
                           "shared_services": "[]"}
         )
         self.load = dbutils.create_test_load()

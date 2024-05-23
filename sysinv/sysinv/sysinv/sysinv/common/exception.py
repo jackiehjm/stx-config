@@ -686,6 +686,15 @@ class NetworkAddrpoolNotFound(NotFound):
     message = _("Network addrpool %(network_addrpool_uuid)s could not be found.")
 
 
+class IpsecPodPolicyNotFound(NotFound):
+    message = _("Ipsec Pod Policy %(ipsec_pod_policy_uuid)s could not be found.")
+
+
+class IpsecPodPolicyAlreadyExists(Conflict):
+    message = _("Ipsec Pod Policy with UUID %(uuid)s "
+                "already exists.")
+
+
 class NetworkAddrpoolAlreadyExists(Conflict):
     message = _("Network addrpool with address pool ID %(address_pool_id)s "
                 "and network ID %(network_id)s already exists.")
