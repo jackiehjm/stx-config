@@ -23,7 +23,7 @@ def upgrade(migrate_engine):
         systems.c.uuid is not None).execute())
     if len(sys) > 0:
         json_dict = json.loads(sys[0].capabilities)
-        json_dict['pod_to_pod_security_enabled'] = False
+        json_dict['pod_to_pod_security_enabled'] = 'n'
         systems.update().where(  # pylint: disable=no-value-for-parameter
             systems.c.uuid == sys[0].uuid).values(
             {'capabilities': json.dumps(json_dict)}).execute()
