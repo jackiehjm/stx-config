@@ -303,7 +303,7 @@ class V1(base.APIBase):
     "Links to the restore resource"
 
     ipsec_pod_policy = [link.Link]
-    "Links to ipsec pod policy resource"
+    "Links to ipsec pod-to-pod policy resource"
 
     @classmethod
     def convert(self):
@@ -929,11 +929,10 @@ class V1(base.APIBase):
 
         v1.ipsec_pod_policy = [link.Link.make_link('self', pecan.request.host_url,
                                                    'ipsec_pod_policy', ''),
-                      link.Link.make_link('bookmark',
+                               link.Link.make_link('bookmark',
                                           pecan.request.host_url,
                                           'ipsec_pod_policy', '',
-                                          bookmark=True)
-                               ]
+                                          bookmark=True)]
         return v1
 
 

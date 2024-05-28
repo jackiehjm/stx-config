@@ -1,19 +1,9 @@
-# All Rights Reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License"); you may
-# not use this file except in compliance with the License. You may obtain
-# a copy of the License at
-#
-#         http://www.apache.org/licenses/LICENSE-2.0
-#
-#    Unless required by applicable law or agreed to in writing, software
-#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-#    License for the specific language governing permissions and limitations
-#    under the License.
 #
 # Copyright (c) 2024 Wind River Systems, Inc.
 #
+# SPDX-License-Identifier: Apache-2.0
+#
+
 import pecan
 import wsme
 
@@ -50,11 +40,6 @@ class IpsecPodPolicyPatchType(types.JsonPatchType):
         result.append(['/protocol'])
         return result
 
-    # @staticmethod
-    # def readonly_attrs():
-    #     """These attributes cannot be updated."""
-    #     return ['/protocol']
-
     @staticmethod
     def validate(patch):
         result = (super(IpsecPodPolicyPatchType, IpsecPodPolicyPatchType).
@@ -62,9 +47,6 @@ class IpsecPodPolicyPatchType(types.JsonPatchType):
         if patch.op in ['add', 'remove']:
             msg = _("Attributes cannot be added or removed")
             raise wsme.exc.ClientSideError(msg % patch.path)
-        # if patch.path in patch.readonly_attrs():
-        #    msg = _("'%s' is a read-only attribute and can not be updated")
-        #    raise wsme.exc.ClientSideError(msg % patch.path)
         return result
 
 

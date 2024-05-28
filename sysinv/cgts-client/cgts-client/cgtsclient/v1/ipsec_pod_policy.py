@@ -13,20 +13,22 @@ from cgtsclient import exc
 CREATION_ATTRIBUTES = ['protocol', 'port']
 
 
-class ipsec_pod_policy(base.Resource):
+class IpsecPodPolicy(base.Resource):
     def __repr__(self):
         return "<ipsec_pod_policy %s>" % self._info
 
 
-class ipsec_pod_policyManager(base.Manager):
-    resource_class = ipsec_pod_policy
+class IpsecPodPolicyManager(base.Manager):
+    resource_class = IpsecPodPolicy
 
     def list(self):
+        """Show list of IPsec pod policies."""
         path = '/v1/ipsec_pod_policy/'
         ret = self._list(path, "ipsec_pod_policy")
         return ret
 
     def get(self, ipsec_pod_policy_uuid):
+        """Show an IPsec pod policy."""
         path = '/v1/ipsec_pod_policy/%s' % ipsec_pod_policy_uuid
         try:
             return self._list(path)[0]
@@ -34,6 +36,7 @@ class ipsec_pod_policyManager(base.Manager):
             return None
 
     def delete(self, ipsec_pod_policy_uuid):
+        """Delete an IPsec pod policy by UUID."""
         path = '/v1/ipsec_pod_policy/%s' % ipsec_pod_policy_uuid
         return self._delete(path)
 
@@ -48,5 +51,6 @@ class ipsec_pod_policyManager(base.Manager):
         return self._create(path, new)
 
     def update(self, policy_uuid, patch):
+        """Update an IPsec pod policy's port or protocol"""
         path = '/v1/ipsec_pod_policy/%s' % policy_uuid
         return self._update(path, patch)

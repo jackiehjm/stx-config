@@ -13,6 +13,7 @@ from cgtsclient import exc
 
 
 def _print_ipsec_pod_policy_show(obj):
+    """Method to show the policy's key data"""
     fields = ['uuid', 'protocol', 'port', 'policy_status']
     data = [(fields[index], getattr(obj, f, ''))
             for index, f in enumerate(fields)]
@@ -88,7 +89,7 @@ def do_ipsec_pod_policy_add(cc, args):
 @utils.arg('--port',
            metavar='<port | <ranges>',
            help="port or <start_port-end_port>), only valid for tcp and udp "
-           "protocol")
+           "protocol [REQUIRED for tcp,udp]")
 def do_ipsec_pod_policy_update(cc, args):
     """Modify IPsec pod policy attributes."""
 
