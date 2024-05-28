@@ -872,7 +872,6 @@ class AgentManager(service.PeriodicService):
             # wait for controller to come up first may be a DOR
             try:
                 ihost = rpcapi.get_ihost_by_macs(icontext, host_macs)
-
             except Timeout:
                 if not rpc_timeout:
                     rpc_timeout = True
@@ -888,7 +887,7 @@ class AgentManager(service.PeriodicService):
                 if hostname != constants.LOCALHOST_HOSTNAME:
                     try:
                         ihost = rpcapi.get_ihost_by_hostname(icontext,
-                                                             hostname)
+                                           hostname)
                     except Timeout:
                         if not rpc_timeout:
                             rpc_timeout = True
