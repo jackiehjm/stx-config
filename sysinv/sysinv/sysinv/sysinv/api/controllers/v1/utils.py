@@ -41,7 +41,6 @@ from sysinv.common import constants
 from sysinv.common import exception
 from sysinv.common import health
 from sysinv.common import usm_service as usm_service
-from sysinv.common import utils as cutils
 from sysinv.helm import common as helm_common
 
 
@@ -1111,16 +1110,3 @@ def get_primary_address_by_name(db_address_name, networktype, raise_exc=False):
     if not address and raise_exc:
         raise exception.AddressNotFoundByName(name=db_address_name)
     return address
-
-
-def get_mgmt_ip(hostname):
-    # During mgmt network reconfiguration, do not change the mgmt IP
-    # in maintencance as it will be updated after the unlock.
-    if os.path.isfile(tsc.MGMT_NETWORK_RECONFIGURATION_ONGOING):
-        return cutils.gethostbyname(constants.CONTROLLER_0_FQDN)
-    else:
-        address_name = cutils.format_address_name(hostname,
-                                                    constants.NETWORK_TYPE_MGMT)
-        address = get_primary_address_by_name(address_name,
-                                                    constants.NETWORK_TYPE_MGMT, True)
-        return address.address

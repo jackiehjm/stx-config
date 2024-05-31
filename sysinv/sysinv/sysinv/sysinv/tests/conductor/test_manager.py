@@ -623,14 +623,17 @@ class ManagerTestCase(base.DbTestCase):
         return ihost
 
     def test_create_ihost(self):
-        ihost_dict = {'mgmt_mac': '00:11:22:33:44:55'}
+        ihost_dict = {'mgmt_mac': '00:11:22:33:44:55',
+                      'mgmt_ip': '1.2.3.4'}
 
         self.service.start()
         res = self.service.create_ihost(self.context, ihost_dict)
         self.assertEqual(res['mgmt_mac'], '00:11:22:33:44:55')
+        self.assertEqual(res['mgmt_ip'], '1.2.3.4')
 
     def test_create_duplicate_ihost(self):
-        ihost_dict = {'mgmt_mac': '00:11:22:33:44:55'}
+        ihost_dict = {'mgmt_mac': '00:11:22:33:44:55',
+                      'mgmt_ip': '1.2.3.4'}
 
         self.service.start()
         # Create first ihost
@@ -646,7 +649,7 @@ class ManagerTestCase(base.DbTestCase):
         self.assertEqual(res1['serialid'], res2['serialid'])
 
     def test_create_ihost_without_mac(self):
-        ihost_dict = {}
+        ihost_dict = {'mgmt_ip': '1.2.3.4'}
 
         self.assertRaises(exception.SysinvException,
                           self.service.create_ihost,
@@ -681,6 +684,7 @@ class ManagerTestCase(base.DbTestCase):
 
     def test_create_ihost_with_values(self):
         ihost_dict = {'mgmt_mac': '00:11:22:33:44:55',
+                      'mgmt_ip': '1.2.3.4',
                       'hostname': 'newhost',
                       'invprovision': 'unprovisioned',
                       'personality': 'worker',
@@ -774,6 +778,7 @@ class ManagerTestCase(base.DbTestCase):
         ihost = self._create_test_ihost()
 
         ihost['mgmt_mac'] = '00:11:22:33:44:55'
+        ihost['mgmt_ip'] = '1.2.3.4'
         ihost['hostname'] = 'newhost'
         ihost['invprovision'] = 'unprovisioned'
         ihost['personality'] = 'worker'
@@ -791,6 +796,7 @@ class ManagerTestCase(base.DbTestCase):
         res = self.service.update_ihost(self.context, ihost)
 
         self.assertEqual(res['mgmt_mac'], '00:11:22:33:44:55')
+        self.assertEqual(res['mgmt_ip'], '1.2.3.4')
         self.assertEqual(res['hostname'], 'newhost')
         self.assertEqual(res['invprovision'], 'unprovisioned')
         self.assertEqual(res['personality'], 'worker')
@@ -835,6 +841,7 @@ class ManagerTestCase(base.DbTestCase):
         ihost = self._create_test_ihost()
 
         ihost['mgmt_mac'] = '00:11:22:33:44:55'
+        ihost['mgmt_ip'] = '1.2.3.4'
         ihost['hostname'] = 'newhost'
         ihost['invprovision'] = 'unprovisioned'
         ihost['personality'] = 'worker'
@@ -872,6 +879,7 @@ class ManagerTestCase(base.DbTestCase):
         ihost = self._create_test_ihost()
 
         ihost['mgmt_mac'] = '00:11:22:33:44:55'
+        ihost['mgmt_ip'] = '1.2.3.42'
         ihost['hostname'] = 'newhost'
         ihost['invprovision'] = 'unprovisioned'
         ihost['personality'] = 'worker'
@@ -1457,6 +1465,7 @@ class ManagerTestCase(base.DbTestCase):
             operational=constants.OPERATIONAL_ENABLED,
             availability=constants.AVAILABILITY_ONLINE,
             mgmt_mac='00:11:22:33:44:56',
+            mgmt_ip='1.2.3.5',
         )
 
         # Speed up the test
@@ -1675,6 +1684,7 @@ class ManagerTestCase(base.DbTestCase):
             operational=constants.OPERATIONAL_ENABLED,
             availability=constants.AVAILABILITY_ONLINE,
             mgmt_mac='00:11:22:33:44:55',
+            mgmt_ip='1.2.3.4',
         )
         # Set the target version for controller-0
         self.dbapi.kube_host_upgrade_update(1, {'target_version': 'v1.42.2'})
@@ -1901,6 +1911,7 @@ class ManagerTestCase(base.DbTestCase):
             operational=constants.OPERATIONAL_ENABLED,
             availability=constants.AVAILABILITY_ONLINE,
             mgmt_mac='00:11:22:33:44:56',
+            mgmt_ip='1.2.3.5',
         )
         # Set the target version for controller-1
         self.dbapi.kube_host_upgrade_update(2, {'target_version': 'v1.42.2'})
@@ -1992,6 +2003,7 @@ class ManagerTestCase(base.DbTestCase):
             operational=constants.OPERATIONAL_ENABLED,
             availability=constants.AVAILABILITY_ONLINE,
             mgmt_mac='00:11:22:33:44:55',
+            mgmt_ip='1.2.3.4',
         )
         # Set the target version for controller-0
         self.dbapi.kube_host_upgrade_update(1, {'target_version': 'v1.42.2'})
@@ -2009,6 +2021,7 @@ class ManagerTestCase(base.DbTestCase):
             operational=constants.OPERATIONAL_ENABLED,
             availability=constants.AVAILABILITY_ONLINE,
             mgmt_mac='00:11:22:33:44:56',
+            mgmt_ip='1.2.3.5',
         )
         # Set the target version for controller-1
         self.dbapi.kube_host_upgrade_update(2, {'target_version': 'v1.42.2'})
@@ -2658,6 +2671,7 @@ class ManagerTestCase(base.DbTestCase):
             config_applied=config_applied,
             config_target=config_target)
         ihost['mgmt_mac'] = '00:11:22:33:44:55'
+        ihost['mgmt_ip'] = '1.2.3.42'
         ihost['hostname'] = hostname
         ihost['invprovision'] = 'provisioned'
         ihost['personality'] = 'controller'
@@ -2911,7 +2925,8 @@ class ManagerTestCase(base.DbTestCase):
             administrative=constants.ADMIN_UNLOCKED,
             operational=constants.OPERATIONAL_ENABLED,
             availability=constants.AVAILABILITY_ONLINE,
-            mgmt_mac='00:11:22:33:44:55')
+            mgmt_mac='00:11:22:33:44:55',
+            mgmt_ip='1.2.3.4')
         # Create controller-1
         config_uuid = str(uuid.uuid4())
         self._create_test_ihost(
@@ -2925,7 +2940,8 @@ class ManagerTestCase(base.DbTestCase):
             administrative=constants.ADMIN_UNLOCKED,
             operational=constants.OPERATIONAL_ENABLED,
             availability=constants.AVAILABILITY_ONLINE,
-            mgmt_mac='22:44:33:55:11:66')
+            mgmt_mac='22:44:33:55:11:66',
+            mgmt_ip='1.2.3.5')
         # Create compute-0
         config_uuid = str(uuid.uuid4())
         self._create_test_ihost(
@@ -2939,7 +2955,8 @@ class ManagerTestCase(base.DbTestCase):
             administrative=constants.ADMIN_UNLOCKED,
             operational=constants.OPERATIONAL_ENABLED,
             availability=constants.AVAILABILITY_ONLINE,
-            mgmt_mac='22:44:33:55:11:77')
+            mgmt_mac='22:44:33:55:11:77',
+            mgmt_ip='1.2.3.6')
 
     def _create_test_iports(self):
         enp25s0f0 = {'dev_id': 0, 'numa_node': 0, 'sriov_numvfs': 0, 'sriov_vfs_pci_address': '',
@@ -3062,6 +3079,7 @@ class ManagerTestCase(base.DbTestCase):
         ihost_hostname = 'controller-1'
         ihost = self.service.get_ihost_by_hostname(self.context, ihost_hostname)
         self.assertEqual(ihost.mgmt_mac, '22:44:33:55:11:66')
+        self.assertEqual(ihost.mgmt_ip, '1.2.3.5')
         self.assertEqual(ihost.hostname, 'controller-1')
 
     def test_get_ihost_by_hostname_invalid_name(self):
@@ -3294,7 +3312,7 @@ class ManagerTestCase(base.DbTestCase):
             config_status=None, config_applied=config_uuid, config_target=config_uuid,
             invprovision=constants.PROVISIONED, administrative=constants.ADMIN_UNLOCKED,
             operational=constants.OPERATIONAL_ENABLED, availability=constants.AVAILABILITY_ONLINE,
-            mgmt_mac='00:11:22:33:44:55')
+            mgmt_mac='00:11:22:33:44:55', mgmt_ip='1.2.3.4')
         self._create_test_networks(mgmt_vlan_id)
 
         mock_find_local_mgmt_interface_vlan_id = mock.MagicMock()
@@ -5302,7 +5320,8 @@ class ManagerTestCase(base.DbTestCase):
             administrative=constants.ADMIN_UNLOCKED,
             operational=constants.OPERATIONAL_ENABLED,
             availability=constants.AVAILABILITY_ONLINE,
-            mgmt_mac='00:11:22:33:44:55')
+            mgmt_mac='00:11:22:33:44:55',
+            mgmt_ip='1.2.3.4')
 
         ihost = self.service.get_ihost_by_hostname(self.context,
                                                    ihost_hostname)
@@ -5352,7 +5371,8 @@ class ManagerTestCase(base.DbTestCase):
             administrative=constants.ADMIN_UNLOCKED,
             operational=constants.OPERATIONAL_ENABLED,
             availability=constants.AVAILABILITY_ONLINE,
-            mgmt_mac='00:11:22:33:44:55')
+            mgmt_mac='00:11:22:33:44:55',
+            mgmt_ip='1.2.3.4')
 
         # Create controller-1
         ihost_hostname1 = 'controller-1'
@@ -5369,7 +5389,8 @@ class ManagerTestCase(base.DbTestCase):
             administrative=constants.ADMIN_UNLOCKED,
             operational=constants.OPERATIONAL_ENABLED,
             availability=constants.AVAILABILITY_ONLINE,
-            mgmt_mac='22:44:33:55:11:66')
+            mgmt_mac='22:44:33:55:11:66',
+            mgmt_ip='1.2.3.5')
 
         # before - no alarm
         self.assertFalse(self._is_kernel_alarm_raised(alarm_id,
