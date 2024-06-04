@@ -317,3 +317,19 @@ class AgentAPI(sysinv.openstack.common.rpc.proxy.RpcProxy):
         return self.call(context,
                          self.make_msg("report_initial_inventory",
                                        host_uuid=host_uuid))
+
+    def apply_ipsec_pod_policy_manifest(self,
+                                        context, host_uuid, data):
+        """ Synchronously, request the agent to apply puppet manifest for
+        ipsec pod policy
+
+        :param context: request context.
+        :param host_uuid: ihost uuid unique id
+        :param data: swanctl data
+        :returns: error message or none
+        """
+        return self.call(context,
+                         self.make_msg("apply_ipsec_pod_policy_manifest",
+                                       host_uuid=host_uuid,
+                                       data=data),
+                         timeout=20)

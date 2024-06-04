@@ -2538,6 +2538,10 @@ AUTOMATIC = "Automatic"
 MANUAL = "Manual"
 ISSUER = "Issuer"
 
+# IPsec pod policy status
+IPSEC_POD_POLICY_STATUS_ERROR = 'error'
+IPSEC_POD_POLICY_STATUS_APPLIED = 'applied'
+
 # USM deploy state
 DEPLOY_STATE_HOST = 'host'  # host is being deploy
 DEPLOY_STATE_HOST_FAILED = 'host-failed'  # host deployment failed
