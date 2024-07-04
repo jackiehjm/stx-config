@@ -531,6 +531,12 @@ class BaseSystemTestCase(BaseIPv4Mixin, DbTestCase):
             hostnames, self.multicast_subnets,
             constants.NETWORK_TYPE_MULTICAST)
 
+    def _create_test_ipsec_pod_policy(self, protocol, port=None):
+        policy = dbutils.create_test_ipsec_pod_policy(
+            protocol=protocol,
+            port=port)
+        return policy
+
     def _get_all_networks(self):
         return self.networks_by_id.values()
 

@@ -12633,3 +12633,246 @@ forbidden (403), badMethod (405)
    }
 
 This operation does not accept a request body.
+
+----------------
+IPsec Pod Policy
+----------------
+
+These APIs are used to configure the IPsec pod policy.
+
+************************
+Add an IPsec Pod Policy
+************************
+
+.. rest_method:: POST /v1/ipsec_pod_policy/
+
+**Normal response codes**
+
+200
+
+**Error response codes**
+
+computeFault (400, 500, ...), serviceUnavailable (503), badRequest (400),
+unauthorized (401), forbidden (403), badMethod (405), overLimit (413)
+
+**Request parameters**
+
+.. csv-table::
+   :header: "Parameter", "Style", "Type", "Description"
+   :widths: 20, 20, 20, 60
+
+   "protocol", "plain", "xsd:string", "The protocol of IPsec pod policy"
+   "port", "plain", "xsd:string", "The port of IPsec pod policy"
+
+::
+
+   {
+      "protocol": "tcp",
+      "port": "8000"
+   }
+
+**Response parameters**
+
+.. csv-table::
+   :header: "Parameter", "Style", "Type", "Description"
+   :widths: 20, 20, 20, 60
+
+   "id", "plain", "xsd:integer", "The internal numeric identifier for this policy"
+   "uuid", "plain", "csapi:UUID", "Unique identifier of IPsec pod policy object"
+   "protocol", "plain", "xsd:string", "Network protocol of the IPsec pod policy"
+   "port", "plain", "xsd:string", "Port of the protocol of the IPsec pod policy"
+   "policy_status", "plain", "xsd:string", "Apply status of the IPsec pod policy"
+
+::
+
+   {
+      "id": 9,
+      "uuid": "86f87e02-abfc-479c-8ef3-b93080ccb86a",
+      "protocol": "tcp",
+      "port": "8000",
+      "policy_status": "applied",
+      "created_at": "2024-07-03T01:03:13.116559+00:00",
+      "updated_at": "2024-07-03T01:03:14.491926+00:00"
+   }
+
+***************************
+Update an IPsec Pod Policy
+***************************
+
+.. rest_method:: PATCH /v1/ipsec_pod_policy/UUID
+
+**Normal response codes**
+
+200
+
+**Error response codes**
+
+computeFault (400, 500, ...), serviceUnavailable (503), badRequest (400),
+unauthorized (401), forbidden (403), badMethod (405), overLimit (413)
+
+**Request parameters**
+
+.. csv-table::
+   :header: "Parameter", "Style", "Type", "Description"
+   :widths: 20, 20, 20, 60
+
+   "uuid", "plain", "csapi:UUID", "Unique identifier of IPsec pod policy object"
+   "protocol", "plain", "xsd:string", "The protocol of IPsec pod policy"
+   "port", "plain", "xsd:string", "The port of IPsec pod policy"
+
+::
+
+   [
+      {
+         "op": "replace",
+         "path": "/port",
+         "value": "8001"
+      }
+   ]
+
+**Response parameters**
+
+.. csv-table::
+   :header: "Parameter", "Style", "Type", "Description"
+   :widths: 20, 20, 20, 60
+
+   "id", "plain", "xsd:integer", "The internal numeric identifier for this policy"
+   "uuid", "plain", "csapi:UUID", "Unique identifier of IPsec pod policy object"
+   "protocol", "plain", "xsd:string", "Network protocol of the IPsec pod policy"
+   "port", "plain", "xsd:string", "Port of the protocol of the IPsec pod policy"
+   "policy_status", "plain", "xsd:string", "Apply status of the IPsec pod policy"
+
+::
+
+   {
+      "id": 9,
+      "uuid": "86f87e02-abfc-479c-8ef3-b93080ccb86a",
+      "protocol": "tcp",
+      "port": "8001",
+      "policy_status": "applied",
+      "created_at": "2024-07-03T01:03:13.116559+00:00",
+      "updated_at": "2024-07-03T01:03:14.491926+00:00"
+   }
+
+***************************
+Delete an IPsec Pod Policy
+***************************
+
+.. rest_method:: DELETE /v1/ipsec_pod_policy/UUID
+
+**Normal response codes**
+
+200
+
+**Error response codes**
+
+computeFault (400, 500, ...), serviceUnavailable (503), badRequest (400),
+unauthorized (401), forbidden (403), badMethod (405), overLimit (413)
+
+**Request parameters**
+
+.. csv-table::
+   :header: "Parameter", "Style", "Type", "Description"
+   :widths: 20, 20, 20, 60
+
+   "uuid", "plain", "csapi:UUID", "Unique identifier of IPsec pod policy object"
+
+This operation does not accept a request body.
+
+**********************
+List IPsec Pod Policy
+**********************
+
+.. rest_method:: GET /v1/ipsec_pod_policy/
+
+**Normal response codes**
+
+200
+
+**Error response codes**
+
+computeFault (400, 500, ...), serviceUnavailable (503), badRequest (400),
+unauthorized (401), forbidden (403), badMethod (405), overLimit (413)
+
+**Response parameters**
+
+.. csv-table::
+   :header: "Parameter", "Style", "Type", "Description"
+   :widths: 20, 20, 20, 60
+
+   "id", "plain", "xsd:integer", "The internal numeric identifier for this policy"
+   "uuid", "plain", "csapi:UUID", "Unique identifier of IPsec pod policy object"
+   "protocol", "plain", "xsd:string", "Network protocol of the IPsec pod policy"
+   "port", "plain", "xsd:string", "Port of the protocol of the IPsec pod policy"
+   "policy_status", "plain", "xsd:string", "Apply status of the IPsec pod policy"
+
+::
+
+   {
+      "ipsec_pod_policy":
+         [
+            {
+               "id": 8,
+               "uuid": "5a68d729-a6cd-4ede-b37a-64cafde1bd08",
+               "protocol": "udp", "port": "889", "policy_status": "applied"
+            },
+            {
+               "id": 6,
+               "uuid": "bb7317d3-9e6d-4ce9-8199-8a2c42a90e89",
+               "protocol": "tcp",
+               "port": "6000-7000",
+               "policy_status": "applied"
+            }
+         ]
+   }
+
+This operation does not accept a request body.
+
+**********************
+Show IPsec Pod Policy
+**********************
+
+.. rest_method:: GET /v1/ipsec_pod_policy/UUID
+
+**Normal response codes**
+
+200
+
+**Error response codes**
+
+computeFault (400, 500, ...), serviceUnavailable (503), badRequest (400),
+unauthorized (401), forbidden (403), badMethod (405), overLimit (413)
+
+**Request parameters**
+
+.. csv-table::
+   :header: "Parameter", "Style", "Type", "Description"
+   :widths: 20, 20, 20, 60
+
+   "uuid", "plain", "csapi:UUID", "Unique identifier of IPsec pod policy object"
+
+**Response parameters**
+
+.. csv-table::
+   :header: "Parameter", "Style", "Type", "Description"
+   :widths: 20, 20, 20, 60
+
+   "id", "plain", "xsd:integer", "The internal numeric identifier for this policy"
+   "uuid", "plain", "csapi:UUID", "Unique identifier of IPsec pod policy object"
+   "protocol", "plain", "xsd:string", "Network protocol of the IPsec pod policy"
+   "port", "plain", "xsd:string", "Port of the protocol of the IPsec pod policy"
+   "policy_status", "plain", "xsd:string", "Apply status of the IPsec pod policy"
+
+::
+
+   {
+      "id": 6,
+      "uuid": "bb7317d3-9e6d-4ce9-8199-8a2c42a90e89",
+      "protocol": "tcp",
+      "port": "6000-7000",
+      "policy_status": "applied",
+      "created_at": "2024-06-05T02:18:47.537648+00:00",
+      "updated_at": "2024-06-05T02:44:54.872580+00:00"
+   }
+
+This operation does not accept a request body.
