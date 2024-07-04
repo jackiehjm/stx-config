@@ -1834,6 +1834,23 @@ def create_test_kube_app(**kw):
     return dbapi.kube_app_create(kube_app)
 
 
+def create_test_ipsec_pod_policy(**kw):
+    obj = get_test_ipsec_pod_policy(**kw)
+    dbapi = db_api.get_instance()
+    return dbapi.ipsec_pod_policy_create(obj)
+
+
+def get_test_ipsec_pod_policy(**kw):
+    policy = {
+            'id': kw.get('id'),
+            'uuid': kw.get('uuid'),
+            'protocol': kw.get('protocol'),
+            'port': kw.get('port'),
+            'policy_status': kw.get('policy_status'),
+           }
+    return policy
+
+
 def get_primary_address_by_name(address_name, networktype):
     dbapi = db_api.get_instance()
     address = None
