@@ -62,13 +62,13 @@ class IpsecPodPolicy(base.APIBase):
     "Unique UUID for this policy"
 
     protocol = wtypes.text
-    "protocol of the policy"
+    "Protocol of the policy"
 
     port = wtypes.text
-    "port or port range of the policy"
+    "Port or port range of the policy"
 
     policy_status = wtypes.text
-    "policy apply status of the policy"
+    "Policy apply status of the policy"
 
     def __init__(self, **kwargs):
         self.fields = list(objects.ipsec_pod_policy.fields.keys())
@@ -184,12 +184,12 @@ class IpsecPodPolicyCollection(collection.Collection):
     @classmethod
     def convert_with_links(cls, rpc_ipsec_pod_policy, limit, url=None,
                            expand=False, **kwargs):
-        collection = IpsecPodPolicyCollection()
-        collection.ipsec_pod_policy = [
+        policy_collection = IpsecPodPolicyCollection()
+        policy_collection.ipsec_pod_policy = [
             IpsecPodPolicy.convert_with_links(n, expand)
             for n in rpc_ipsec_pod_policy]
-        collection.next = collection.get_next(limit, url=url, **kwargs)
-        return collection
+        policy_collection.next = policy_collection.get_next(limit, url=url, **kwargs)
+        return policy_collection
 
 
 LOCK_NAME = 'IpsecPodPolicyController'

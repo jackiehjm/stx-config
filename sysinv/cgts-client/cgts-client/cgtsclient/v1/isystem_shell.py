@@ -66,7 +66,7 @@ def do_show(cc, args):
            metavar='<sdn_enabled>',
            choices=['true', 'false', 'True', 'False'],
            help='The SDN enabled or disabled flag')
-@utils.arg('-podse', '--pod-to-pod-security-enabled',
+@utils.arg('-p2pse', '--pod-to-pod-security-enabled',
            metavar='<pod_to_pod_security_enabled>',
            choices=['true', 'false', 'True', 'False'],
            help='The pod_to_pod_security enabled or disabled flag')
